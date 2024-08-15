@@ -91,6 +91,27 @@ const VerticalNavbar = ({ isNavbarCollapsed }) => {
                     </div>
                 </div>
                 <div className="accordion-item">
+                    <h2 className="accordion-header" id="headingThree">
+                        <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                            Student
+                        </button>
+                    </h2>
+                    <div id="collapseEight" className="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                        <div className="accordion-body">
+                            <div className="nav-link-row">
+                                <Link to='/addStudent' className="nav-link-effect" style={{textDecoration:'none'}}>
+                                    <span data-text="Link 1">add Student</span>
+                                </Link>
+                            </div>
+                            <div className="nav-link-row">
+                                <Link to='/updateRoute' className="nav-link-effect" style={{textDecoration:'none'}}>
+                                    <span data-text="Link 1">All Routes</span>
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="accordion-item">
                     <h2 className="accordion-header" id="headingFour">
                         <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
                             Contact Us

@@ -20,6 +20,14 @@ class Webmethod{
             },
         });
     }
+    postapiWthTokenForm(url,data,token){
+        return axios.post(url,data,{
+            headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+            },
+        });
+    }
     getapi(url,token){
         return axios.get(url,{
             headers: {

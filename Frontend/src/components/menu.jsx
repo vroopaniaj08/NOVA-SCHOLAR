@@ -9,9 +9,10 @@ import Savecourse from './saveCourse';
 import UpdateCourse from './updateCourse';
 import UpdateAdmission from './updateAdmission';
 import Signup from './signup';
+import Addstudent from './addStudent';
 
 const Menu = () => {
-    const [isNavbarCollapsed, setIsNavbarCollapsed] = useState(false);
+    const [isNavbarCollapsed, setIsNavbarCollapsed] = useState(true);
 
     const toggleNavbar = () => {
         setIsNavbarCollapsed(!isNavbarCollapsed);
@@ -32,6 +33,7 @@ const Menu = () => {
                     <Route exact path = '/updateCourse' element = {<UpdateCourse></UpdateCourse>}></Route>
                     <Route exact path = '/updateAdmissionFee' element = {<UpdateAdmission></UpdateAdmission>}></Route>
                     <Route exact path = '/signup' element = {<Signup></Signup>}></Route>
+                    <Route exact path = '/addStudent' element = {<Addstudent></Addstudent>}></Route>
                 </Routes>
                 {/* <Login></Login> */}
             </div>

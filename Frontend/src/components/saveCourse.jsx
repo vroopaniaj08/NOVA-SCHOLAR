@@ -52,8 +52,6 @@ export default function Transportation(){
                     <div className="row mt-3">
                         <div className="col-md-12">
                             <button className="btn btn-danger w-100" >ADD</button> &nbsp;&nbsp;&nbsp;
-                            {/* {msg} */}
-                            {/* <Link to='/register' className="text-center w-100 d-block fw-bold">Sign Up or Register</Link> */}
                         </div>
                     </div>
                 </form>

@@ -10,5 +10,6 @@ export default {
     "courselist":`${api}/user/course/courseList`,
     "updateCourse":`${api}/user/course/update`,
     "updateAdmissionFee":`${api}/user/admission/update`,
-    "AdmissionFeeList":`${api}/user/admission/showAll`
+    "AdmissionFeeList":`${api}/user/admission/showAll`,
+    "saveStudent":`${api}/user/student/save`
 }

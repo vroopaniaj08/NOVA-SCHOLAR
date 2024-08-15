@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import webmethod from "../services/webmethod";
 import apis from "../services/apis";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 export default function Updatetransportation(){
     let cityBox = useRef();
@@ -54,8 +55,17 @@ export default function Updatetransportation(){
     }
 
     return <>
+    <div className="container">
+
     <h3 className="text-center">Transportation List</h3>
-    <input type="text" className="form-control container my-2" onChange={(e)=>setSearch(e.target.value)} placeholder="Search by name"></input>
+    <div className="row my-3">
+        <div className="col-md-6">
+            <input type="text" className="form-control" onChange={(e)=>setSearch(e.target.value)} placeholder="Search by city"></input>
+        </div>
+        <div className="col-md-6">
+        <Link to = '/transport' style={{textDecoration:'none'}}><button className="btn btn-primary form-control text-white">+ADD</button></Link>
+        </div>
+    </div>
     <table className="table table-striped table-bordered table-hover table-responsive-md container">
         <thead>
             <tr>
@@ -78,6 +88,7 @@ export default function Updatetransportation(){
             }
         </tbody>
     </table>
+    </div>
     <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div className="modal-dialog">
                 <div className="modal-content">

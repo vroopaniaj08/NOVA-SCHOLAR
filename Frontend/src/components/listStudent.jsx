@@ -1,12 +1,10 @@
-import { useRef } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useRef, useState } from "react"
 import webmethod from "../services/webmethod";
 import apis from "../services/apis";
-import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
-export default function Addstudent(){
-    let navigate = useNavigate()
-    let loginStatus = useSelector(state=>state.userLoginInfo.value)
+export default function UpdateCourse(){
     let firstNameBox = useRef();
     let lastNameBox = useRef();
     let fatherNameBox = useRef();
@@ -23,12 +21,45 @@ export default function Addstudent(){
     let totalBox = useRef();
     let discountBox = useRef();
     let leadSourceBox = useRef();
-    let courseIdBox = useRef();
-    let saveStudent = async(event) =>{
+    let isactiveBox = useRef();
+    const [list,setlist]= useState([]);
+    let loginStatus = useSelector(state=>state.userLoginInfo.value)
+    const [search , setSearch] = useState('')
+    const [ID,setID] = useState(undefined)
+    useEffect(()=>{
+        listitems()
+    },[])
+    // let updatetrans = async(event) =>{
+    //     event.preventDefault();
+    //     let response = await webmethod.getapi(apis.updateTransportation,loginStatus.token)
+    // }
+
+    
+    let isUpdate = async(data) =>{
+        // courseIdBox.current.value = data.course_id
+        firstNameBox.current.value = data.firstname
+        lastNameBox.current.value = data.lastname
+        fatherNameBox.current.value = data.fathername
+        motherNameBox.current.value = data.mothername
+        castBox.current.value = data.cast
+        categoryBox.current.value = data.category
+        mobile1Box.current.value = data.mobile1
+        mobile2Box.current.value = data.mobile2
+        addressBox.current.value = data.address
+        genderBox.current.value = data.gender
+        statusBox.current.value = data.status
+        totalBox.current.value = data.total_fee
+        discountBox.current.value = data.discount
+        leadSourceBox.current.value = data.LeadSource
+        isactiveBox.current.value = data.is_active
+        {setID(data.id)}
+    }
+    
+    let doneupdate = async(event) =>{
         event.preventDefault();
-        // photoBox.current.click();
+        // console.log(isactiveBox.current.value)
         let obj = new FormData();
-        obj.append("course_id",courseIdBox.current.value);
+        // obj.append("course_id",courseIdBox.current.value);
         obj.append("firstname",firstNameBox.current.value);
         obj.append("lastname",lastNameBox.current.value);
         obj.append("fathername",fatherNameBox.current.value);
@@ -45,29 +76,77 @@ export default function Addstudent(){
         obj.append("total_fee",totalBox.current.value);
         obj.append("discount",discountBox.current.value);
         obj.append("LeadSource",leadSourceBox.current.value);
-        obj.append("is_active",true);
-        obj.append("created_by",loginStatus.id)
+        obj.append("is_active",isactiveBox.current.value);
+        obj.append("updated_by",loginStatus.id)
         try{
-            let response = await webmethod.postapiWthTokenForm(apis.saveStudent,obj,loginStatus.token);
-            console.log(response);
+
+            let response = await webmethod.putapiWthTokenForm(apis.updateStudent + "/" + ID,obj,loginStatus.token)
+            console.log(response)
             if(response.data.status){
-                navigate('/studentlist')
+                // setlist(obj)
+                listitems()
+                alert("update successful")
             }
-            else{
-                alert("error occured")
-            }
-            // console.log(photoBox.current.files[0])
         }
         catch(error){
             console.log(error);
         }
     }
+    
+    let listitems = async() =>{
+        // event.preventDefault();
+        // console.log(loginStatus.token)
+        let response = await webmethod.getapi(apis.studentlist,loginStatus.token);
+        console.log(response);
+        {setlist(response.data.data)}
+    }
+
     return <>
-        <div className="d-flex justify-content-center align-items-center" style={{height: "90vh", backgroundRepeat: "no-repeat", backgroundSize: "cover" }}>
-            <div className="container p-4 w-50" style={{ height: "fit-content", boxShadow: '1px 2px 4px 2px rgba(0, 0, 0, 0.3)', borderRadius: "10px", backgroundColor: `rgba(255,255,255,0.5)` }}>
-                <h3 className='text-center'>save student</h3>
-                <form onSubmit={saveStudent}>
-                    <div className="row mt-3">
+    <div className="container">
+    <h3 className="text-center">Student List</h3>
+    <div className="row my-3">
+        <div className="col-md-6">
+            <input type="text" className="form-control" onChange={(e)=>setSearch(e.target.value)} placeholder="Search by first name"></input>
+        </div>
+        <div className="col-md-6">
+        <Link to = '/addStudent' style={{textDecoration:'none'}}><button className="btn btn-primary form-control text-white">+ADD</button></Link>
+        </div>
+    </div>
+    {/* <input type="text" className="form-control my-2" onChange={(e)=>setSearch(e.target.value)} placeholder="Search by Course name"></input> */}
+    <table className="table table-striped table-bordered table-hover table-responsive-md container">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Status</th>
+                <th>Created By</th>
+                <th>Update</th>
+            </tr>
+        </thead>
+        <tbody>
+            {
+                list.filter((obj)=> search.toLowerCase() === '' ? (obj.is_active && obj):(obj.is_active && obj.firstname.toLowerCase().includes(search))).map(obj=><tr>
+                    <td>{obj.firstname}</td>
+                    <td>{obj.lastname}</td>
+                    <td>{obj.status}</td>
+                    <td>{obj.created_by}</td>
+                    <td><button className="btn btn-primary" onClick = {()=>isUpdate(obj)} data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button></td>
+                </tr>)
+            }
+        </tbody>
+    </table>
+    </div>
+    <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div className="modal-dialog">
+                <div className="modal-content">
+                    <div className="modal-header">
+                        <h1 className="modal-title fs-5" id="exampleModalLabel">Update</h1>
+                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div className="modal-body">
+                        <h3 className='text-center'>change here</h3>
+                        <form onSubmit={doneupdate}>
+                        <div className="row mt-3">
                         <div className="col-md-6">
                             <input type="text" ref={firstNameBox} className="form-control" placeholder="Enter first name here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
                         </div>
@@ -133,17 +212,18 @@ export default function Addstudent(){
                             <input type="text" ref={leadSourceBox} className="form-control" placeholder="Enter lead source here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
                         </div>
                         <div className="col-md-6">
-                            <input type="text" ref={courseIdBox} className="form-control" placeholder="Enter course id here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
+                            <input type="text" ref={isactiveBox} className="form-control" placeholder="Enter active status here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
                         </div>
                     </div>
-                    <div className="row mt-3">
-                        <div className="col-md-12">
-                            <button className="btn btn-danger w-100" >add student</button> &nbsp;&nbsp;&nbsp;
-                            {/* {msg} */}
-                            {/* <Link to='/signup' className="text-center w-100 d-block fw-bold">Sign Up or Register</Link> */}
-                        </div>
+                            <div className="row mt-3">
+                                <div className="col-md-12">
+                                    <button type="submit" className="btn btn-primary w-50">Update Detail</button> &nbsp;&nbsp;&nbsp;
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                </form>
+
+                </div>
             </div>
         </div>
     </>

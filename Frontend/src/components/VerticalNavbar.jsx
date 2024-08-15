@@ -52,11 +52,6 @@ const VerticalNavbar = ({ isNavbarCollapsed }) => {
                     <div id="collapseTwo" className="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
                         <div className="accordion-body">
                             <div className="nav-link-row">
-                                <Link to='/saveCourse' className="nav-link-effect" style={{textDecoration:'none'}}>
-                                    <span data-text="Link 1">Save Course</span>
-                                </Link>
-                            </div>
-                            <div className="nav-link-row">
                                 <Link to='/updateCourse' className="nav-link-effect" style={{textDecoration:'none'}}>
                                     <span data-text="Link 1">Course List</span>
                                 </Link>
@@ -78,11 +73,6 @@ const VerticalNavbar = ({ isNavbarCollapsed }) => {
                     <div id="collapseThree" className="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                         <div className="accordion-body">
                             <div className="nav-link-row">
-                                <Link to='/transport' className="nav-link-effect" style={{textDecoration:'none'}}>
-                                    <span data-text="Link 1">add Route</span>
-                                </Link>
-                            </div>
-                            <div className="nav-link-row">
                                 <Link to='/updateRoute' className="nav-link-effect" style={{textDecoration:'none'}}>
                                     <span data-text="Link 1">All Routes</span>
                                 </Link>
@@ -99,13 +89,8 @@ const VerticalNavbar = ({ isNavbarCollapsed }) => {
                     <div id="collapseEight" className="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
                         <div className="accordion-body">
                             <div className="nav-link-row">
-                                <Link to='/addStudent' className="nav-link-effect" style={{textDecoration:'none'}}>
-                                    <span data-text="Link 1">add Student</span>
-                                </Link>
-                            </div>
-                            <div className="nav-link-row">
-                                <Link to='/updateRoute' className="nav-link-effect" style={{textDecoration:'none'}}>
-                                    <span data-text="Link 1">All Routes</span>
+                                <Link to='/studentlist' className="nav-link-effect" style={{textDecoration:'none'}}>
+                                    <span data-text="Link 1">Student list</span>
                                 </Link>
                             </div>
                         </div>

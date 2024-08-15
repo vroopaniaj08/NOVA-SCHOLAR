@@ -10,7 +10,7 @@ import UpdateCourse from './updateCourse';
 import UpdateAdmission from './updateAdmission';
 import Signup from './signup';
 import Addstudent from './addStudent';
-
+import ListStudent from './listStudent'
 const Menu = () => {
     const [isNavbarCollapsed, setIsNavbarCollapsed] = useState(true);
 
@@ -34,6 +34,7 @@ const Menu = () => {
                     <Route exact path = '/updateAdmissionFee' element = {<UpdateAdmission></UpdateAdmission>}></Route>
                     <Route exact path = '/signup' element = {<Signup></Signup>}></Route>
                     <Route exact path = '/addStudent' element = {<Addstudent></Addstudent>}></Route>
+                    <Route exact path = '/studentlist' element = {<ListStudent></ListStudent>}></Route>
                 </Routes>
                 {/* <Login></Login> */}
             </div>

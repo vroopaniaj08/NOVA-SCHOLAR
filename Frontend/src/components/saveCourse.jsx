@@ -2,8 +2,10 @@ import { useSelector } from "react-redux";
 import { useRef } from "react"
 import webmethod from "../services/webmethod";
 import apis from "../services/apis";
+import { useNavigate } from "react-router-dom";
 
 export default function Transportation(){
+    let navigate = useNavigate();
     let loginStatus = useSelector(state=>state.userLoginInfo.value)
     let courseBox = useRef()
     let feeBox = useRef()
@@ -22,6 +24,12 @@ export default function Transportation(){
         // console.log(loginStatus.id)
         let response = await webmethod.postapiWthToken(apis.saveCourse,obj,loginStatus.token);
         console.log(response);
+        if(response.data.status){
+            navigate('/updateCourse')
+        }
+        else{
+            alert("error occured")
+        }
     }
     return <>
         <div className="d-flex justify-content-center align-items-center" style={{height: "100vh", backgroundRepeat: "no-repeat", backgroundSize: "cover" }}>

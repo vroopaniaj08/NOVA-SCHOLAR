@@ -1,5 +1,5 @@
 const express = require('express');
-const {Admission_fee,Role} = require('../models/index');
+const {Admission_fee,Role,Course} = require('../models/index');
 const { where } = require('sequelize');
 const router = express.Router();
 
@@ -70,7 +70,17 @@ router.get('/showAll',async(request,response)=>{
     })
     try{
         if(dataa[0].role_name == 'Admin' || dataa[0].role_name == 'teacher'){
-            let data = await Admission_fee.findAll()
+            let data = await Admission_fee.findAll(
+                {
+                include:[{
+                model:Course,
+                as:"course_info",
+                attributes:{
+                    exclude:['created_by','updated_by']
+                }
+
+            }]}
+        )
             if(data){
                 response.json({status:true,data})
             }
@@ -83,7 +93,7 @@ router.get('/showAll',async(request,response)=>{
         }
     }
     catch(err){
-        response.json({status:false})
+        response.json({status:false,error:err.message})
     }
 })
 

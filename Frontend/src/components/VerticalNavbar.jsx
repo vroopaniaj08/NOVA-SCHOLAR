@@ -121,6 +121,11 @@ const VerticalNavbar = ({ isNavbarCollapsed }) => {
                             <div id="collapseLogout" className="accordion-collapse collapse show" aria-labelledby="headingLogout" data-bs-parent="#accordionExample">
                                 <div className="accordion-body">
                                     <div className="nav-link-row">
+                                        <Link to = '/feelist' className="nav-link-effect" style={{textDecoration:'none'}}>
+                                            <span data-text="Logout">fee list</span>
+                                        </Link>
+                                    </div>
+                                    <div className="nav-link-row">
                                         <Link onClick={isLogout} className="nav-link-effect" style={{textDecoration:'none'}}>
                                             <span data-text="Logout">Logout</span>
                                         </Link>

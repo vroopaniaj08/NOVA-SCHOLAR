@@ -69,20 +69,20 @@ export default function Updatetransportation(){
     <table className="table table-striped table-bordered table-hover table-responsive-md container">
         <thead>
             <tr>
+                <th>id</th>
                 <th>City</th>
                 <th>Fees</th>
                 <th>Status</th>
-                <th>Created By</th>
                 <th>Update</th>
             </tr>
         </thead>
         <tbody>
             {
                 list.filter((obj)=> search.toLowerCase() === '' ? (obj.is_active && obj):(obj.is_active && obj.city.toLowerCase().includes(search))).map(obj=><tr>
+                    <td>{obj.id}</td>
                     <td>{obj.city}</td>
                     <td>{obj.fee}</td>
                     <td>{obj.is_active? "active": "deactivated"}</td>
-                    <td>{obj.created_by}</td>
                     <td><button className="btn btn-primary" onClick = {()=>isUpdate(obj)} data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button></td>
                 </tr>)
             }

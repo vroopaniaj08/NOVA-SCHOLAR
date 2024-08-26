@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 export default function UpdateCourse(){
+    let courseIdBox = useRef()
     let firstNameBox = useRef();
     let lastNameBox = useRef();
     let fatherNameBox = useRef();
@@ -22,10 +23,33 @@ export default function UpdateCourse(){
     let discountBox = useRef();
     let leadSourceBox = useRef();
     let isactiveBox = useRef();
+    let transportIdBox = useRef();
     const [list,setlist]= useState([]);
     let loginStatus = useSelector(state=>state.userLoginInfo.value)
     const [search , setSearch] = useState('')
     const [ID,setID] = useState(undefined)
+    const [course,setcourse] = useState([])
+    const [transport,settransport] = useState([])
+    const [courseFee,setcourseFee] = useState(0);
+    const [transportFee,settransportFee] = useState(0);
+    useEffect(()=>{
+        courseList()
+        // transportList()
+    },[])
+
+    let courseList = async() => {
+        let response = await webmethod.getapi(apis.courselist,loginStatus.token);
+        console.log(response)
+        {setcourse(response.data.data)}
+    }
+    useEffect(()=>{
+        transportList()
+    },[])
+    let transportList = async() =>{
+        let response = await webmethod.getapi(apis.cityList,loginStatus.token);
+        console.log(response)
+        {settransport(response.data.data)}
+    }
     useEffect(()=>{
         listitems()
     },[])
@@ -36,7 +60,7 @@ export default function UpdateCourse(){
 
     
     let isUpdate = async(data) =>{
-        // courseIdBox.current.value = data.course_id
+        courseIdBox.current.value = data.course_id
         firstNameBox.current.value = data.firstname
         lastNameBox.current.value = data.lastname
         fatherNameBox.current.value = data.fathername
@@ -48,10 +72,10 @@ export default function UpdateCourse(){
         addressBox.current.value = data.address
         genderBox.current.value = data.gender
         statusBox.current.value = data.status
-        totalBox.current.value = data.total_fee
+        totalBox.current.value = (courseFee + transportFee)
         discountBox.current.value = data.discount
         leadSourceBox.current.value = data.LeadSource
-        isactiveBox.current.value = data.is_active
+        // isactiveBox.current.value = data.is_active
         {setID(data.id)}
     }
     
@@ -59,7 +83,8 @@ export default function UpdateCourse(){
         event.preventDefault();
         // console.log(isactiveBox.current.value)
         let obj = new FormData();
-        // obj.append("course_id",courseIdBox.current.value);
+        totalBox.current.value = parseFloat(courseFee) + parseFloat(transportFee);
+        obj.append("course_id",courseIdBox.current.value);
         obj.append("firstname",firstNameBox.current.value);
         obj.append("lastname",lastNameBox.current.value);
         obj.append("fathername",fatherNameBox.current.value);
@@ -76,8 +101,9 @@ export default function UpdateCourse(){
         obj.append("total_fee",totalBox.current.value);
         obj.append("discount",discountBox.current.value);
         obj.append("LeadSource",leadSourceBox.current.value);
-        obj.append("is_active",isactiveBox.current.value);
+        // obj.append("is_active",isactiveBox.current.value);
         obj.append("updated_by",loginStatus.id)
+
         try{
 
             let response = await webmethod.putapiWthTokenForm(apis.updateStudent + "/" + ID,obj,loginStatus.token)
@@ -92,6 +118,23 @@ export default function UpdateCourse(){
             console.log(error);
         }
     }
+    let handleCourseChange = async(event) => {
+        const selectedCourseId = event.target.value;
+        courseIdBox.current.value = selectedCourseId;
+        console.log("Selected Course ID:", selectedCourseId);
+        const response  = await webmethod.getapi(apis.oneCourse + '/' + event.target.value,loginStatus.token)
+        console.log(response.data.data.fee);
+        {setcourseFee(response.data.data.fee)}
+    };
+
+    let handleTransportChange = async(event) => {
+        const selectedCourseId = event.target.value;
+        transportIdBox.current.value = selectedCourseId;
+        console.log("Selected Course ID:", selectedCourseId);
+        const response  = await webmethod.getapi(apis.oneTransport + '/' + event.target.value,loginStatus.token)
+        console.log(response.data.data.fee);
+        {settransportFee(response.data.data.fee)}
+    };
     
     let listitems = async() =>{
         // event.preventDefault();
@@ -116,20 +159,24 @@ export default function UpdateCourse(){
     <table className="table table-striped table-bordered table-hover table-responsive-md container">
         <thead>
             <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
+                <th>Name</th>
+                <th>Courses</th>
+                <th>Father's Name</th>
+                <th>Mother's Name</th>
+                <th>Mobile No.</th>
                 <th>Status</th>
-                <th>Created By</th>
                 <th>Update</th>
             </tr>
         </thead>
         <tbody>
             {
                 list.filter((obj)=> search.toLowerCase() === '' ? (obj.is_active && obj):(obj.is_active && obj.firstname.toLowerCase().includes(search))).map(obj=><tr>
-                    <td>{obj.firstname}</td>
-                    <td>{obj.lastname}</td>
+                    <td>{obj.firstname}&nbsp;{obj.lastname}</td>
+                    <td>{obj.course_info.course_name}</td>
+                    <td>{obj.fathername}</td>
+                    <td>{obj.mothername}</td>
+                    <td>{obj.mobile1}</td>
                     <td>{obj.status}</td>
-                    <td>{obj.created_by}</td>
                     <td><button className="btn btn-primary" onClick = {()=>isUpdate(obj)} data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button></td>
                 </tr>)
             }
@@ -147,79 +194,129 @@ export default function UpdateCourse(){
                         <h3 className='text-center'>change here</h3>
                         <form onSubmit={doneupdate}>
                         <div className="row mt-3">
-                        <div className="col-md-6">
-                            <input type="text" ref={firstNameBox} className="form-control" placeholder="Enter first name here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
+                        <div className="col-md-6 form-floating">
+                            <input type="text" ref={firstNameBox} className="form-control" id="firstName" placeholder="First Name" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                            <label htmlFor="firstName">First Name</label>
                         </div>
-                        <div className="col-md-6">
-                            <input type="text" ref={lastNameBox} className="form-control" placeholder="Enter last name here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
-                        </div>
-                    </div>
-                    <div className="row mt-3">
-                        <div className="col-md-12">
-                            <input type="text" ref={fatherNameBox} className="form-control" placeholder="Enter father's name here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
+                        <div className="col-md-6 form-floating">
+                            <input type="text" ref={lastNameBox} className="form-control" id="lastName" placeholder="Last Name" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                            <label htmlFor="lastName">Last Name</label>
                         </div>
                     </div>
                     <div className="row mt-3">
-                        <div className="col-md-12">
-                            <input type="text" ref={motherNameBox} className="form-control" placeholder="Enter mother's name here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
+                        <div className="col-md-12 form-floating">
+                            <input type="text" ref={fatherNameBox} className="form-control" id="fatherName" placeholder="Father's Name" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                            <label htmlFor="fatherName">Father's Name</label>
                         </div>
                     </div>
                     <div className="row mt-3">
-                        <div className="col-md-6">
-                            <input type="text" ref={castBox} className="form-control" placeholder="Enter cast here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
-                        </div>
-                        <div className="col-md-6">
-                            <input type="text" ref={categoryBox} className="form-control" placeholder="Enter category here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
+                        <div className="col-md-12 form-floating">
+                            <input type="text" ref={motherNameBox} className="form-control" id="motherName" placeholder="Mother's Name" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                            <label htmlFor="motherName">Mother's Name</label>
                         </div>
                     </div>
                     <div className="row mt-3">
-                        <div className="col-md-6">
-                            <input type="file" ref={photoBox} className="form-control" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
+                        <div className="col-md-6 form-floating">
+                            <input type="text" ref={castBox} className="form-control" id="cast" placeholder="Caste" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                            <label htmlFor="cast">Caste</label>
                         </div>
-                        <div className="col-md-6">
-                            <input type="date" ref={dobBox} className="form-control" placeholder="Enter email here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
-                        </div>
-                    </div>
-                    <div className="row mt-3">
-                        <div className="col-md-6">
-                            <input type="text" ref={mobile1Box} className="form-control" placeholder="Enter mobile1 here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
-                        </div>
-                        <div className="col-md-6">
-                            <input type="text" ref={mobile2Box} className="form-control" placeholder="Enter mobile2 here(optional)" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
-                        </div>
-                    </div>
-                    <div className="row mt-3">
-                        <div className="col-md-12">
-                            <textarea ref={addressBox} className="form-control" placeholder="Enter address here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></textarea>
-                        </div>
-                    </div>
-                    <div className="row mt-3">
-                        <div className="col-md-3">
-                            <input type="text" ref={genderBox} className="form-control" placeholder="Enter gender here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
-                        </div>
-                        <div className="col-md-3">
-                            <input type="text" ref={statusBox} className="form-control" placeholder="Enter status here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
-                        </div>
-                        <div className="col-md-3">
-                            <input type="text" ref={totalBox} className="form-control" placeholder="Enter total fee here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
-                        </div>
-                        <div className="col-md-3">
-                            <input type="text" ref={discountBox} className="form-control" placeholder="Enter discount here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
+                        <div className="col-md-6 form-floating">
+                            <select ref={categoryBox} className="form-select" id="category" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}>
+                                <option value="General">General</option>
+                                <option value="SC/ST">SC/ST</option>
+                                <option value="OBC">OBC</option>
+                                <option value="PWD">PWD</option>
+                            </select>
+                            <label htmlFor="category">Category</label>
                         </div>
                     </div>
                     <div className="row mt-3">
                         <div className="col-md-6">
-                            <input type="text" ref={leadSourceBox} className="form-control" placeholder="Enter lead source here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
+                            <input type="file" ref={photoBox} className="form-control" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
                         </div>
-                        <div className="col-md-6">
-                            <input type="text" ref={isactiveBox} className="form-control" placeholder="Enter active status here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
+                        <div className="col-md-6 form-floating">
+                            <input type="date" ref={dobBox} className="form-control" id="dob" placeholder="Date of Birth" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                            <label htmlFor="dob">Date of Birth</label>
                         </div>
                     </div>
-                            <div className="row mt-3">
-                                <div className="col-md-12">
-                                    <button type="submit" className="btn btn-primary w-50">Update Detail</button> &nbsp;&nbsp;&nbsp;
-                                </div>
-                            </div>
+                    <div className="row mt-3">
+                        <div className="col-md-6 form-floating">
+                            <input type="text" ref={mobile1Box} className="form-control" id="mobile1" placeholder="Mobile 1" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                            <label htmlFor="mobile1">Mobile 1</label>
+                        </div>
+                        <div className="col-md-6 form-floating">
+                            <input type="text" ref={mobile2Box} className="form-control" id="mobile2" placeholder="Mobile 2" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                            <label htmlFor="mobile2">Mobile 2 (Optional)</label>
+                        </div>
+                    </div>
+                    <div className="row mt-3">
+                        <div className="col-md-12 form-floating">
+                            <textarea ref={addressBox} className="form-control" id="address" placeholder="Address" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></textarea>
+                            <label htmlFor="address">Address</label>
+                        </div>
+                    </div>
+                    <div className="row mt-3">
+                        <div className="col-md-3 form-floating">
+                            <select ref={genderBox} className="form-select" id="gender" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <label htmlFor="gender">Gender</label>
+                        </div>
+                        <div className="col-md-3 form-floating">
+                            <select ref={statusBox} className="form-select" id="status" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}>
+                                <option value="New">New</option>
+                                <option value="Old">Old</option>
+                            </select>
+                            <label htmlFor="status">Status</label>
+                        </div>
+                        <div className="col-md-3 form-floating">
+                            <input type="text" ref={totalBox} className="form-control" id="totalFee" placeholder="Total Fee" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} disabled/>
+                            <label htmlFor="totalFee">Total Fee</label>
+                        </div>
+                        <div className="col-md-3 form-floating">
+                            <input type="text" ref={discountBox} className="form-control" id="discount" placeholder="Discount" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                            <label htmlFor="discount">Discount</label>
+                        </div>
+                    </div>
+                    <div className="row mt-3">
+                        <div className="col-md-4 form-floating">
+                            <select ref={leadSourceBox} className="form-select" id="leadSource" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}>
+                                <option value="Online">Online</option>
+                                <option value="Offline">Offline</option>
+                                <option value="Referral">Referral</option>
+                            </select>
+                            <label htmlFor="leadSource">Lead Source</label>
+                        </div>
+                        <div className="col-md-4 form-floating">
+                            <select ref={courseIdBox} className="form-select" id="courseId" onChange={handleCourseChange} style={{ backgroundColor: `rgba(255,255,255,0.7)` }}>
+                                <option value="" disabled selected>Select Course</option>
+                                {course.map((obj) => (
+                                    <option key={obj.id} value={obj.id}>
+                                        {obj.course_name}
+                                    </option>
+                                ))}
+                            </select>
+                            <label htmlFor="courseId">Course ID</label>
+                        </div>
+                        <div className="col-md-4 form-floating">
+                            <select ref={transportIdBox} className="form-select" id="courseId" onChange={handleTransportChange} style={{ backgroundColor: `rgba(255,255,255,0.7)` }}>
+                                <option value="" disabled selected>Select Transportation</option>
+                                {transport.map((obj) => (
+                                    <option key={obj.id} value={obj.id}>
+                                        {obj.city}
+                                    </option>
+                                ))}
+                            </select>
+                            <label htmlFor="courseId">Course ID</label>
+                        </div>
+                    </div>
+                    <div className="row mt-4">
+                        <div className="col-md-12 text-center">
+                            <button className="btn btn-primary" type="submit">Update Student</button>
+                        </div>
+                    </div>
                         </form>
                     </div>
 

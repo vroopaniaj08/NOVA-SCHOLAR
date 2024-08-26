@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { student, User_role } = require('../models/index');
+const { student, User_role ,Role,Course} = require('../models/index');
 const multer = require('multer');
 const path = require('path');
 
@@ -199,44 +199,53 @@ const upload = multer({ storage: storage });
  */
 
 router.post('/save', upload.single('photo'), async (request, response) => {
+    const id = request.role_id;
+    let dataa = await Role.findAll({
+        where:{id:id}
+    })
     try {
-        const {
-            course_id,firstname, lastname, fathername, mothername, cast, category,
-            dob, mobile1, mobile2, address, gender, status, total_fee,
-            discount, LeadSource, is_active, created_by, updated_by, role_id
-        } = request.body;
+        if(dataa[0].role_name == 'Admin' || dataa[0].role_name == 'teacher'){
+            const {
+                course_id,firstname, lastname, fathername, mothername, cast, category,
+                dob, mobile1, mobile2, address, gender, status, total_fee,
+                discount, LeadSource, is_active, created_by, updated_by, role_id
+            } = request.body;
 
-        // Store the link to the photo instead of just the filename
-        const photo = request.file ? `/images/${request.file.filename}` : null;
+            // Store the link to the photo instead of just the filename
+            const photo = request.file ? `/images/${request.file.filename}` : null;
 
-        if (!photo) {
-            return response.json({ status: false, error: 'Photo is required' });
-        }
+            if (!photo) {
+                return response.json({ status: false, error: 'Photo is required' });
+            }
 
-        let data = await student.create({
-            course_id, firstname, lastname, fathername, mothername, cast, category,
-            photo, dob, mobile1, mobile2, address, gender, status,
-            total_fee, discount, LeadSource, is_active,
-            created_by: created_by || null,
-            updated_by: updated_by || null
-        });
-
-        if (data) {
-            let data3 = await User_role.create({
-                user_id: data.id,
-                role_id,
-                is_active,
+            let data = await student.create({
+                course_id, firstname, lastname, fathername, mothername, cast, category,
+                photo, dob, mobile1, mobile2, address, gender, status,
+                total_fee, discount, LeadSource, is_active,
                 created_by: created_by || null,
                 updated_by: updated_by || null
             });
 
-            if (data3) {
-                response.json({ status: true, data, data3 });
+            if (data) {
+                let data3 = await User_role.create({
+                    user_id: data.id,
+                    role_id,
+                    is_active,
+                    created_by: created_by || null,
+                    updated_by: updated_by || null
+                });
+
+                if (data3) {
+                    response.json({ status: true, data, data3 });
+                } else {
+                    response.json({ status: false, error: 'Failed to create user role' });
+                }
             } else {
-                response.json({ status: false, error: 'Failed to create user role' });
+                response.json({ status: false, error: 'Failed to create student record' });
             }
-        } else {
-            response.json({ status: false, error: 'Failed to create student record' });
+        }
+        else{
+            response.json({status:false,msg:"unauthorized access"})
         }
     } catch (err) {
         response.json({ status: false, error: err.message });
@@ -298,16 +307,25 @@ router.post('/save', upload.single('photo'), async (request, response) => {
  */
 
 router.get('/showOne/:id',async(request,response)=>{
+    const id = request.role_id;
+    let dataa = await Role.findAll({
+        where:{id:id}
+    })
     try{
-        const pid = request.params.id
-        let data = await student.findOne({
-            where:{id:pid}
-        })
-        if(data){
-            response.json({status:true,data})
+        if(dataa[0].role_name == 'Admin' || dataa[0].role_name == 'teacher' || dataa[0].role_name == 'Parent'){
+            const pid = request.params.id
+            let data = await student.findOne({
+                where:{id:pid}
+            })
+            if(data){
+                response.json({status:true,data})
+            }
+            else{
+                response.json({status:false})
+            }
         }
         else{
-            response.json({status:false})
+            response.json({status:false,msg:"unauthorized access"})
         }
     }
     catch(err){
@@ -368,14 +386,33 @@ router.get('/showOne/:id',async(request,response)=>{
 
 
 router.get('/showAll',async(request,response)=>{
+    const id = request.role_id;
+    let dataa = await Role.findAll({
+        where:{id:id}
+    })
     try{
-        let data = await student.findAll()
-        console.log(data)
-        if(data){
-            response.json({status:true,data})
+        if(dataa[0].role_name == 'Admin' || dataa[0].role_name == 'teacher'){
+            let data = await student.findAll(
+                {
+                    include:[{
+                    model:Course,
+                    as:"course_info",
+                    attributes:{
+                        exclude:['created_by','updated_by']
+                    }
+    
+                }]}
+            )
+            console.log(data)
+            if(data){
+                response.json({status:true,data})
+            }
+            else{
+                response.json({status:false})
+            }
         }
         else{
-            response.json({status:false})
+            response.json({status:false,msg:"unauthorized access"})
         }
     }
     catch(err){
@@ -498,23 +535,32 @@ router.get('/showAll',async(request,response)=>{
  */
 
 router.put('/update/:id', upload.single('photo'), async (request, response) => {
+    const id = request.role_id;
+    let dataa = await Role.findAll({
+        where:{id:id}
+    })
     try {
-        const pid = request.params.id;
-        const updateData = { ...request.body };
+        if(dataa[0].role_name == 'Admin' || dataa[0].role_name == 'teacher'){
+            const pid = request.params.id;
+            const updateData = { ...request.body };
 
-        // If a new photo is uploaded, add its path to updateData
-        if (request.file) {
-            updateData.photo = `/images/${request.file.filename}`;
+            // If a new photo is uploaded, add its path to updateData
+            if (request.file) {
+                updateData.photo = `/images/${request.file.filename}`;
+            }
+
+            let updatedRowsCount = await student.update(updateData, {
+                where: { id: pid }
+            });
+
+            if (updatedRowsCount > 0) {
+                response.json({ status: true, message: 'Student updated successfully', affectedRows: updatedRowsCount });
+            } else {
+                response.status(404).json({ status: false, message: 'Student not found or no changes made' });
+            }
         }
-
-        let updatedRowsCount = await student.update(updateData, {
-            where: { id: pid }
-        });
-
-        if (updatedRowsCount > 0) {
-            response.json({ status: true, message: 'Student updated successfully', affectedRows: updatedRowsCount });
-        } else {
-            response.status(404).json({ status: false, message: 'Student not found or no changes made' });
+        else{
+            response.json({status:false,msg:"unauthorized access"})
         }
     } catch (err) {
         response.status(500).json({ status: false, error: err.message });

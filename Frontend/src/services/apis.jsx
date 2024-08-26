@@ -13,5 +13,9 @@ export default {
     "AdmissionFeeList":`${api}/user/admission/showAll`,
     "saveStudent":`${api}/user/student/save`,
     "studentlist":`${api}/user/student/showAll`,
-    "updateStudent":`${api}/user/student/update`
+    "updateStudent":`${api}/user/student/update`,
+    "oneCourse":`${api}/user/course/showOne`,
+    "oneTransport":`${api}/user/transport/showOne`,
+    "addReceipt":`${api}/user/recipts/save`,
+    "dueFee":`${api}/user/recipts/duefee`
 }

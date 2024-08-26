@@ -1,12 +1,12 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import webmethod from "../services/webmethod";
 import apis from "../services/apis";
 import { useNavigate } from "react-router-dom";
 
-export default function Addstudent(){
-    let navigate = useNavigate()
-    let loginStatus = useSelector(state=>state.userLoginInfo.value)
+export default function Addstudent() {
+    let navigate = useNavigate();
+    let loginStatus = useSelector(state => state.userLoginInfo.value);
     let firstNameBox = useRef();
     let lastNameBox = useRef();
     let fatherNameBox = useRef();
@@ -19,132 +19,180 @@ export default function Addstudent(){
     let mobile2Box = useRef();
     let addressBox = useRef();
     let genderBox = useRef();
-    let statusBox =useRef();
+    let statusBox = useRef();
     let totalBox = useRef();
     let discountBox = useRef();
     let leadSourceBox = useRef();
     let courseIdBox = useRef();
-    let saveStudent = async(event) =>{
+    const [course, setcourse] = useState([])
+    useEffect(() => {
+        courseList()
+    }, [])
+    let courseList = async () => {
+        let response = await webmethod.getapi(apis.courselist, loginStatus.token);
+        console.log(response)
+        { setcourse(response.data.data) }
+    }
+    // let setid = (id) =>{
+    //     courseIdBox.current.value = id;
+    // }
+
+    let saveStudent = async (event) => {
         event.preventDefault();
-        // photoBox.current.click();
         let obj = new FormData();
-        obj.append("course_id",courseIdBox.current.value);
-        obj.append("firstname",firstNameBox.current.value);
-        obj.append("lastname",lastNameBox.current.value);
-        obj.append("fathername",fatherNameBox.current.value);
-        obj.append("mothername",motherNameBox.current.value);
-        obj.append("cast",castBox.current.value);
-        obj.append("category",categoryBox.current.value);
-        obj.append("photo",photoBox.current.files[0]);
-        obj.append("dob",dobBox.current.value);
-        obj.append("mobile1",mobile1Box.current.value);
-        obj.append("mobile2",mobile2Box.current.value);
-        obj.append("address",addressBox.current.value);
-        obj.append("gender",genderBox.current.value);
-        obj.append("status",statusBox.current.value);
-        obj.append("total_fee",totalBox.current.value);
-        obj.append("discount",discountBox.current.value);
-        obj.append("LeadSource",leadSourceBox.current.value);
-        obj.append("is_active",true);
-        obj.append("created_by",loginStatus.id)
-        try{
-            let response = await webmethod.postapiWthTokenForm(apis.saveStudent,obj,loginStatus.token);
-            console.log(response);
-            if(response.data.status){
-                navigate('/studentlist')
+        // console.log(courseIdBox.current.value)
+        obj.append("course_id", courseIdBox.current.value);
+        obj.append("firstname", firstNameBox.current.value);
+        obj.append("lastname", lastNameBox.current.value);
+        obj.append("fathername", fatherNameBox.current.value);
+        obj.append("mothername", motherNameBox.current.value);
+        obj.append("cast", castBox.current.value);
+        obj.append("category", categoryBox.current.value);
+        obj.append("photo", photoBox.current.files[0]);
+        obj.append("dob", dobBox.current.value);
+        obj.append("mobile1", mobile1Box.current.value);
+        obj.append("mobile2", mobile2Box.current.value);
+        obj.append("address", addressBox.current.value);
+        obj.append("gender", genderBox.current.value);
+        obj.append("status", statusBox.current.value);
+        obj.append("total_fee", totalBox.current.value);
+        obj.append("discount", discountBox.current.value);
+        obj.append("LeadSource", leadSourceBox.current.value);
+        obj.append("is_active", true);
+        obj.append("created_by", loginStatus.id);
+
+        try {
+            let response = await webmethod.postapiWthTokenForm(apis.saveStudent, obj, loginStatus.token);
+            if (response.data.status) {
+                navigate('/studentlist');
+            } else {
+                alert("Error occurred");
             }
-            else{
-                alert("error occured")
-            }
-            // console.log(photoBox.current.files[0])
-        }
-        catch(error){
+        } catch (error) {
             console.log(error);
         }
-    }
-    return <>
-        <div className="d-flex justify-content-center align-items-center" style={{height: "90vh", backgroundRepeat: "no-repeat", backgroundSize: "cover" }}>
+    };
+
+    return (
+        <div className="d-flex justify-content-center align-items-center" style={{ height: "90vh", backgroundRepeat: "no-repeat", backgroundSize: "cover" }}>
             <div className="container p-4 w-50" style={{ height: "fit-content", boxShadow: '1px 2px 4px 2px rgba(0, 0, 0, 0.3)', borderRadius: "10px", backgroundColor: `rgba(255,255,255,0.5)` }}>
-                <h3 className='text-center'>save student</h3>
+                <h3 className='text-center'>Save Student</h3>
                 <form onSubmit={saveStudent}>
                     <div className="row mt-3">
-                        <div className="col-md-6">
-                            <input type="text" ref={firstNameBox} className="form-control" placeholder="Enter first name here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
+                        <div className="col-md-6 form-floating">
+                            <input type="text" ref={firstNameBox} className="form-control" id="firstName" placeholder="First Name" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                            <label htmlFor="firstName">First Name</label>
                         </div>
-                        <div className="col-md-6">
-                            <input type="text" ref={lastNameBox} className="form-control" placeholder="Enter last name here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
-                        </div>
-                    </div>
-                    <div className="row mt-3">
-                        <div className="col-md-12">
-                            <input type="text" ref={fatherNameBox} className="form-control" placeholder="Enter father's name here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
+                        <div className="col-md-6 form-floating">
+                            <input type="text" ref={lastNameBox} className="form-control" id="lastName" placeholder="Last Name" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                            <label htmlFor="lastName">Last Name</label>
                         </div>
                     </div>
                     <div className="row mt-3">
-                        <div className="col-md-12">
-                            <input type="text" ref={motherNameBox} className="form-control" placeholder="Enter mother's name here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
+                        <div className="col-md-12 form-floating">
+                            <input type="text" ref={fatherNameBox} className="form-control" id="fatherName" placeholder="Father's Name" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                            <label htmlFor="fatherName">Father's Name</label>
                         </div>
                     </div>
                     <div className="row mt-3">
-                        <div className="col-md-6">
-                            <input type="text" ref={castBox} className="form-control" placeholder="Enter cast here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
-                        </div>
-                        <div className="col-md-6">
-                            <input type="text" ref={categoryBox} className="form-control" placeholder="Enter category here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
+                        <div className="col-md-12 form-floating">
+                            <input type="text" ref={motherNameBox} className="form-control" id="motherName" placeholder="Mother's Name" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                            <label htmlFor="motherName">Mother's Name</label>
                         </div>
                     </div>
                     <div className="row mt-3">
-                        <div className="col-md-6">
-                            <input type="file" ref={photoBox} className="form-control" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
+                        <div className="col-md-6 form-floating">
+                            <input type="text" ref={castBox} className="form-control" id="cast" placeholder="Caste" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                            <label htmlFor="cast">Caste</label>
                         </div>
-                        <div className="col-md-6">
-                            <input type="date" ref={dobBox} className="form-control" placeholder="Enter email here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
-                        </div>
-                    </div>
-                    <div className="row mt-3">
-                        <div className="col-md-6">
-                            <input type="text" ref={mobile1Box} className="form-control" placeholder="Enter mobile1 here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
-                        </div>
-                        <div className="col-md-6">
-                            <input type="text" ref={mobile2Box} className="form-control" placeholder="Enter mobile2 here(optional)" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
-                        </div>
-                    </div>
-                    <div className="row mt-3">
-                        <div className="col-md-12">
-                            <textarea ref={addressBox} className="form-control" placeholder="Enter address here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></textarea>
-                        </div>
-                    </div>
-                    <div className="row mt-3">
-                        <div className="col-md-3">
-                            <input type="text" ref={genderBox} className="form-control" placeholder="Enter gender here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
-                        </div>
-                        <div className="col-md-3">
-                            <input type="text" ref={statusBox} className="form-control" placeholder="Enter status here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
-                        </div>
-                        <div className="col-md-3">
-                            <input type="text" ref={totalBox} className="form-control" placeholder="Enter total fee here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
-                        </div>
-                        <div className="col-md-3">
-                            <input type="text" ref={discountBox} className="form-control" placeholder="Enter discount here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
+                        <div className="col-md-6 form-floating">
+                            <select ref={categoryBox} className="form-select" id="category" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}>
+                                <option value="General">General</option>
+                                <option value="SC/ST">SC/ST</option>
+                                <option value="OBC">OBC</option>
+                                <option value="PWD">PWD</option>
+                            </select>
+                            <label htmlFor="category">Category</label>
                         </div>
                     </div>
                     <div className="row mt-3">
                         <div className="col-md-6">
-                            <input type="text" ref={leadSourceBox} className="form-control" placeholder="Enter lead source here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
+                            <input type="file" ref={photoBox} className="form-control" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
                         </div>
-                        <div className="col-md-6">
-                            <input type="text" ref={courseIdBox} className="form-control" placeholder="Enter course id here" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></input>
+                        <div className="col-md-6 form-floating">
+                            <input type="date" ref={dobBox} className="form-control" id="dob" placeholder="Date of Birth" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                            <label htmlFor="dob">Date of Birth</label>
                         </div>
                     </div>
                     <div className="row mt-3">
-                        <div className="col-md-12">
-                            <button className="btn btn-danger w-100" >add student</button> &nbsp;&nbsp;&nbsp;
-                            {/* {msg} */}
-                            {/* <Link to='/signup' className="text-center w-100 d-block fw-bold">Sign Up or Register</Link> */}
+                        <div className="col-md-6 form-floating">
+                            <input type="text" ref={mobile1Box} className="form-control" id="mobile1" placeholder="Mobile 1" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                            <label htmlFor="mobile1">Mobile 1</label>
+                        </div>
+                        <div className="col-md-6 form-floating">
+                            <input type="text" ref={mobile2Box} className="form-control" id="mobile2" placeholder="Mobile 2" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                            <label htmlFor="mobile2">Mobile 2 (Optional)</label>
+                        </div>
+                    </div>
+                    <div className="row mt-3">
+                        <div className="col-md-12 form-floating">
+                            <textarea ref={addressBox} className="form-control" id="address" placeholder="Address" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}></textarea>
+                            <label htmlFor="address">Address</label>
+                        </div>
+                    </div>
+                    <div className="row mt-3">
+                        <div className="col-md-3 form-floating">
+                            <select ref={genderBox} className="form-select" id="gender" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <label htmlFor="gender">Gender</label>
+                        </div>
+                        <div className="col-md-3 form-floating">
+                            <select ref={statusBox} className="form-select" id="status" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}>
+                                <option value="New">New</option>
+                                <option value="Old">Old</option>
+                            </select>
+                            <label htmlFor="status">Status</label>
+                        </div>
+                        <div className="col-md-3 form-floating">
+                            <input type="text" ref={totalBox} className="form-control" id="totalFee" placeholder="Total Fee" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                            <label htmlFor="totalFee">Total Fee</label>
+                        </div>
+                        <div className="col-md-3 form-floating">
+                            <input type="text" ref={discountBox} className="form-control" id="discount" placeholder="Discount" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                            <label htmlFor="discount">Discount</label>
+                        </div>
+                    </div>
+                    <div className="row mt-3">
+                        <div className="col-md-6 form-floating">
+                            <select ref={leadSourceBox} className="form-select" id="leadSource" style={{ backgroundColor: `rgba(255,255,255,0.7)` }}>
+                                <option value="Online">Online</option>
+                                <option value="Offline">Offline</option>
+                                <option value="Referral">Referral</option>
+                            </select>
+                            <label htmlFor="leadSource">Lead Source</label>
+                        </div>
+                        <div className="col-md-6 form-floating">
+                            <select ref={courseIdBox} className="form-select" id="courseId" onChange={(e) => courseIdBox.current.value = e.target.value} style={{ backgroundColor: `rgba(255,255,255,0.7)` }}>
+                                <option value="" disabled selected>Select Course</option>
+                                {course.map((obj) => (
+                                    <option key={obj.id} value={obj.id}>
+                                        {obj.course_name}
+                                    </option>
+                                ))}
+                            </select>
+                            <label htmlFor="courseId">Course ID</label>
+                        </div>
+                    </div>
+                    <div className="row mt-4">
+                        <div className="col-md-12 text-center">
+                            <button className="btn btn-primary" type="submit">Save Student</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
-    </>
+    );
 }

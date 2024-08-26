@@ -75,7 +75,7 @@ export default function UpdateCourse(){
                 <th>Course</th>
                 <th>Fees</th>
                 <th>Status</th>
-                <th>Created By</th>
+                {/* <th>Created By</th> */}
                 <th>Update</th>
             </tr>
         </thead>
@@ -85,7 +85,7 @@ export default function UpdateCourse(){
                     <td>{obj.course_name}</td>
                     <td>{obj.fee}</td>
                     <td>{obj.is_active? "active": "deactivated"}</td>
-                    <td>{obj.created_by}</td>
+                    {/* <td>{obj.created_by}</td> */}
                     <td><button className="btn btn-primary" onClick = {()=>isUpdate(obj)} data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button></td>
                 </tr>)
             }

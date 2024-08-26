@@ -62,20 +62,20 @@ export default function UpdateCourse(){
     <table className="table table-striped table-bordered table-hover table-responsive-md container">
         <thead>
             <tr>
-                <th>Course_id</th>
+                <th>Course_name</th>
                 <th>Fees</th>
                 <th>Status</th>
-                <th>Created By</th>
+                {/* <th>Created By</th> */}
                 <th>Update</th>
             </tr>
         </thead>
         <tbody>
             {
                 list.filter((obj)=> search.toLowerCase() === '' ? (obj.is_active && obj):(obj.is_active && obj.city.toLowerCase().includes(search))).map(obj=><tr>
-                    <td>{obj.course_id}</td>
+                    <td>{obj.course_info.course_name}</td>
                     <td>{obj.fee}</td>
                     <td>{obj.is_active? "active": "deactivated"}</td>
-                    <td>{obj.created_by}</td>
+                    {/* <td>{obj.created_by}</td> */}
                     <td><button className="btn btn-primary" onClick = {()=>isUpdate(obj)} data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button></td>
                 </tr>)
             }

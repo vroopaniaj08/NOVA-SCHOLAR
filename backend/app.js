@@ -5,11 +5,13 @@ const uiExpress = require('swagger-ui-express')
 const swaggerjsdoc = require('swagger-jsdoc')
 const cors = require('cors')
 const dotenv = require('dotenv');
+const path = require('path')
 dotenv.config()
 server.use(express.json())
 server.use(express.urlencoded())
 server.use(cors('*'))
 
+server.use('/images', express.static(path.join(__dirname, 'images')));
 const options = {
     definition: {
         openapi: '3.0.0',

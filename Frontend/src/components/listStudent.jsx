@@ -148,11 +148,13 @@ export default function UpdateCourse(){
     <div className="container">
     <h3 className="text-center">Student List</h3>
     <div className="row my-3">
-        <div className="col-md-6">
+        <div className="col-md-10">
             <input type="text" className="form-control" onChange={(e)=>setSearch(e.target.value)} placeholder="Search by first name"></input>
         </div>
-        <div className="col-md-6">
-        <Link to = '/addStudent' style={{textDecoration:'none'}}><button className="btn btn-primary form-control text-white">+ADD</button></Link>
+        <div className="col-md-2">
+        <Link to='/addStudent' style={{ textDecoration: 'none' }}><button className="btn btn-primary form-control text-white">
+                        <i className="fas fa-plus"></i> ADD
+                    </button></Link>
         </div>
     </div>
     {/* <input type="text" className="form-control my-2" onChange={(e)=>setSearch(e.target.value)} placeholder="Search by Course name"></input> */}
@@ -177,7 +179,9 @@ export default function UpdateCourse(){
                     <td>{obj.mothername}</td>
                     <td>{obj.mobile1}</td>
                     <td>{obj.status}</td>
-                    <td><button className="btn btn-primary" onClick = {()=>isUpdate(obj)} data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button></td>
+                    <td>{/* <button className="btn btn-primary" onClick={() => isUpdate(obj)} data-bs-toggle="modal" data-bs-target="#exampleModal"> */}
+                                <i className="fas fa-edit" onClick={() => isUpdate(obj)} data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
+                                {/* </button> */}</td>
                 </tr>)
             }
         </tbody>

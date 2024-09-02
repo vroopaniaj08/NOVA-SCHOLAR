@@ -283,6 +283,9 @@ router.get('/showOne/:id',async(request,response)=>{
                 response.json({status:false})
             }
         }
+        else{
+            response.json({status:false,msg:"unauthorized access"})
+        }
     }
     catch(err){
         response.json({status:false})

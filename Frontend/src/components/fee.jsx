@@ -13,7 +13,9 @@ export default function UpdateCourse() {
     let amountBox = useRef();
     let studentBox = useRef();
     let dueBox = useRef();
+    let courseBox = useRef();
     const modalRef = useRef();
+    let firstNameBox = useRef();
     // let isactiveBox = useRef();
     // let transportIdBox = useRef();
     const [list, setlist] = useState([]);
@@ -62,6 +64,8 @@ export default function UpdateCourse() {
     let isUpdate = async (obj) => {
         studentBox.current.value = obj.id;
         let today = new Date();
+        firstNameBox.current.value = obj.firstname +' '+obj.lastname
+        courseBox.current.value = obj.course_info.course_name
         let formattedDate = today.toISOString().split('T')[0];
         dateBox.current.value = formattedDate;
         let response = await webmethod.getapi(apis.dueFee + "/" + obj.id, loginStatus.token)
@@ -94,7 +98,7 @@ export default function UpdateCourse() {
                         <th>Mobile No.</th>
                         <th>total fee</th>
                         <th>Status</th>
-                        <th>Update</th>
+                        <th>Pay remaining</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -128,14 +132,20 @@ export default function UpdateCourse() {
                         <form onSubmit={doneupdate}>
                             <div className="row mt-3">
                                 <div className="col-md-12 form-floating">
-                                    <input type="date" ref={dateBox} disabled className="form-control" id="firstName" placeholder="First Name" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
-                                    <label htmlFor="firstName">todays date</label>
+                                    <input type="text" ref={firstNameBox} disabled className="form-control" id="firstName" placeholder="First Name" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                                    <label htmlFor="firstName">Name</label>
                                 </div>
                             </div>
                             <div className="row mt-3">
                                 <div className="col-md-12 form-floating">
-                                    <input type="text" ref={amountBox} className="form-control" id="lastName" placeholder="Last Name" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
-                                    <label htmlFor="lastName">Amount paid</label>
+                                    <input type="text" ref={courseBox} disabled className="form-control" id="firstName" placeholder="First Name" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                                    <label htmlFor="firstName">Name</label>
+                                </div>
+                            </div>
+                            <div className="row mt-3">
+                                <div className="col-md-12 form-floating">
+                                    <input type="date" ref={dateBox} disabled className="form-control" id="firstName" placeholder="First Name" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                                    <label htmlFor="firstName">todays date</label>
                                 </div>
                             </div>
                             <div className="row mt-3">
@@ -146,6 +156,12 @@ export default function UpdateCourse() {
                                 <div className="col-md-9 form-floating">
                                     <input type="text" ref={dueBox} disabled className="form-control" id="lastName" placeholder="Last Name" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
                                     <label htmlFor="lastName">Due Fee</label>
+                                </div>
+                            </div>
+                            <div className="row mt-3">
+                                <div className="col-md-12 form-floating">
+                                    <input type="text" ref={amountBox} className="form-control" id="lastName" placeholder="Last Name" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                                    <label htmlFor="lastName">Amount paid</label>
                                 </div>
                             </div>
                             <div className="row mt-4">

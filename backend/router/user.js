@@ -10,6 +10,7 @@ const userRoleRouter = require('./user_role');
 const { where } = require('sequelize');
 const studentRouter = require('./student');
 const reciptRouter = require('./recipt');
+const teacherRouter = require('./teacher');
 // const jwt = require('../config/jwt');
 /**
  * @swagger
@@ -231,4 +232,5 @@ router.use('/role',roleRouter)
 router.use('/userrole',userRoleRouter)
 router.use('/student',studentRouter)
 router.use('/recipts',reciptRouter)
+router.use('/teacher',teacherRouter)
 module.exports = router

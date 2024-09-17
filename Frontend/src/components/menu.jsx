@@ -12,6 +12,8 @@ import Signup from './signup';
 import Addstudent from './addStudent';
 import ListStudent from './listStudent'
 import Fee from './fee'
+import Teacher from './teacher';
+import TeacherList from './listteacher'
 const Menu = () => {
     const [isNavbarCollapsed, setIsNavbarCollapsed] = useState(true);
 
@@ -37,6 +39,8 @@ const Menu = () => {
                     <Route exact path = '/addStudent' element = {<Addstudent></Addstudent>}></Route>
                     <Route exact path = '/studentlist' element = {<ListStudent></ListStudent>}></Route>
                     <Route exact path = '/feelist' element = {<Fee></Fee>}></Route>
+                    <Route exact path = '/Saveteacher' element = {<Teacher></Teacher>}></Route>
+                    <Route exact path = '/teacherList' element = {<TeacherList></TeacherList>}></Route>
                 </Routes>
                 {/* <Login></Login> */}
             </div>

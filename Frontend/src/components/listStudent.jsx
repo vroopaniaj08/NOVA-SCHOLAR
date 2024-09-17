@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react"
-import webmethod from "../services/webmethod";
-import apis from "../services/apis";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import apis from "../services/apis";
+import webmethod from "../services/webmethod";
 
 export default function UpdateCourse(){
     let courseIdBox = useRef()
@@ -313,7 +313,7 @@ export default function UpdateCourse(){
                                     </option>
                                 ))}
                             </select>
-                            <label htmlFor="courseId">Course ID</label>
+                            <label htmlFor="courseId">Transporttation ID</label>
                         </div>
                     </div>
                     <div className="row mt-4">

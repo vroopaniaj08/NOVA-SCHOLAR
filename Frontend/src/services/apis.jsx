@@ -17,5 +17,7 @@ export default {
     "oneCourse":`${api}/user/course/showOne`,
     "oneTransport":`${api}/user/transport/showOne`,
     "addReceipt":`${api}/user/recipts/save`,
-    "dueFee":`${api}/user/recipts/duefee`
+    "dueFee":`${api}/user/recipts/duefee`,
+    "saveteacher":`${api}/user/teacher/save`,
+    "listTeacher":`${api}/user/teacher/showAll`
 }

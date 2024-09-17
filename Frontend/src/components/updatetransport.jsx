@@ -83,7 +83,7 @@ export default function Updatetransportation(){
                     <td>{obj.city}</td>
                     <td>{obj.fee}</td>
                     <td>{obj.is_active? "active": "deactivated"}</td>
-                    <td><button className="btn btn-primary" onClick = {()=>isUpdate(obj)} data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button></td>
+                    <td><i className="fas fa-edit" onClick={() => isUpdate(obj)} data-bs-toggle="modal" data-bs-target="#exampleModal"></i></td>
                 </tr>)
             }
         </tbody>

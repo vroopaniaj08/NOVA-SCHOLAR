@@ -21,6 +21,7 @@ export default function UpdateCourse() {
     const [list, setlist] = useState([]);
     let loginStatus = useSelector(state => state.userLoginInfo.value)
     const [search, setSearch] = useState('')
+    const [due, setDue] = useState(0)
 
     useEffect(() => {
         listitems()
@@ -71,8 +72,13 @@ export default function UpdateCourse() {
         let response = await webmethod.getapi(apis.dueFee + "/" + obj.id, loginStatus.token)
         console.log(response);
         if (response.data.status) {
-            dueBox.current.value = obj.total_fee - response.data.data
+            const calculatedDue = obj.total_fee - response.data.data;
+            setDue(calculatedDue);
+            dueBox.current.value = calculatedDue;
         }
+    }
+    let edit = (value) => {
+        dueBox.current.value = due - value
     }
 
     return <>
@@ -160,7 +166,7 @@ export default function UpdateCourse() {
                             </div>
                             <div className="row mt-3">
                                 <div className="col-md-12 form-floating">
-                                    <input type="text" ref={amountBox} className="form-control" id="lastName" placeholder="Last Name" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
+                                    <input type="text" ref={amountBox} onChange={(e)=>edit(e.target.value)} className="form-control" id="lastName" placeholder="Last Name" style={{ backgroundColor: `rgba(255,255,255,0.7)` }} />
                                     <label htmlFor="lastName">Amount paid</label>
                                 </div>
                             </div>

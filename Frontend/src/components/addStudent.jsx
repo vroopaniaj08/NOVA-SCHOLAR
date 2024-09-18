@@ -18,6 +18,7 @@ export default function Addstudent() {
     let mobile1Box = useRef();
     let mobile2Box = useRef();
     let addressBox = useRef();
+    let transportIdBox = useRef();
     let genderBox = useRef();
     let statusBox = useRef();
     let totalBox = useRef();
@@ -25,17 +26,37 @@ export default function Addstudent() {
     let leadSourceBox = useRef();
     let courseIdBox = useRef();
     const [course, setcourse] = useState([])
+    const [transport, settransport] = useState([])
+    const [transportFee, settransportFee] = useState(0)
     useEffect(() => {
         courseList()
+        // transportList()
+    }, [])
+    useEffect(() => {
+        transportList()
     }, [])
     let courseList = async () => {
         let response = await webmethod.getapi(apis.courselist, loginStatus.token);
         console.log(response)
         { setcourse(response.data.data) }
     }
+    let transportList = async () => {
+        let response = await webmethod.getapi(apis.cityList, loginStatus.token);
+        console.log(response)
+        { settransport(response.data.data) }
+    }
     // let setid = (id) =>{
     //     courseIdBox.current.value = id;
     // }
+
+    let handleTransportChange = async (event) => {
+        const selectedCourseId = event.target.value;
+        transportIdBox.current.value = selectedCourseId;
+        console.log("Selected Course ID:", selectedCourseId);
+        const response = await webmethod.getapi(apis.oneTransport + '/' + event.target.value, loginStatus.token)
+        console.log(response.data.data.fee);
+        { settransportFee(response.data.data.fee) }
+    };
 
     let saveStudent = async (event) => {
         event.preventDefault();
@@ -58,6 +79,7 @@ export default function Addstudent() {
         obj.append("total_fee", totalBox.current.value);
         obj.append("discount", discountBox.current.value);
         obj.append("LeadSource", leadSourceBox.current.value);
+        obj.append("transport_id", transportIdBox.current.value);
         obj.append("is_active", true);
         obj.append("created_by", loginStatus.id);
 
@@ -174,7 +196,7 @@ export default function Addstudent() {
                             </select>
                             <label htmlFor="leadSource">Lead Source</label>
                         </div>
-                        <div className="col-md-6 form-floating">
+                        <div className="col-md-3 form-floating">
                             <select ref={courseIdBox} className="form-select" id="courseId" onChange={(e) => courseIdBox.current.value = e.target.value} style={{ backgroundColor: `rgba(255,255,255,0.7)` }}>
                                 <option value="" disabled selected>Select Course</option>
                                 {course.map((obj) => (
@@ -184,6 +206,17 @@ export default function Addstudent() {
                                 ))}
                             </select>
                             <label htmlFor="courseId">Course ID</label>
+                        </div>
+                        <div className="col-md-3 form-floating">
+                            <select ref={transportIdBox} className="form-select" id="courseId" onChange={handleTransportChange} style={{ backgroundColor: `rgba(255,255,255,0.7)` }}>
+                                <option value="" disabled selected>Select Transportation</option>
+                                {transport.map((obj) => (
+                                    <option key={obj.id} value={obj.id}>
+                                        {obj.city}
+                                    </option>
+                                ))}
+                            </select>
+                            <label htmlFor="courseId">Transportation ID</label>
                         </div>
                     </div>
                     <div className="row mt-4">

@@ -76,7 +76,7 @@ export default function UpdateCourse(){
                     <td>{obj.fee}</td>
                     <td>{obj.is_active? "active": "deactivated"}</td>
                     {/* <td>{obj.created_by}</td> */}
-                    <td><button className="btn btn-primary" onClick = {()=>isUpdate(obj)} data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button></td>
+                    <td><i className="fas fa-edit" style={{cursor:"pointer"}} onClick = {()=>isUpdate(obj)} data-bs-toggle="modal" data-bs-target="#exampleModal"></i></td>
                 </tr>)
             }
         </tbody>

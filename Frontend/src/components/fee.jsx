@@ -36,7 +36,8 @@ export default function UpdateCourse() {
             date: dateBox.current.value,
             amount: amountBox.current.value
         }
-        if (amountBox.current.value * 1 <= dueBox.current.value * 1) {
+        amountBox.current.value = 0;
+        if (0 <= dueBox.current.value * 1) {
             let response = await webmethod.postapiWthToken(apis.addReceipt, obj, loginStatus.token);
             console.log(response);
             const modalElement = await modalRef.current;
@@ -85,13 +86,8 @@ export default function UpdateCourse() {
         <div className="container">
             <h3 className="text-center">Student List</h3>
             <div className="row my-3">
-                <div className="col-md-10">
+                <div className="col-md-12">
                     <input type="text" className="form-control" onChange={(e) => setSearch(e.target.value)} placeholder="Search by first name"></input>
-                </div>
-                <div className="col-md-2">
-                    <Link to='/addStudent' style={{ textDecoration: 'none' }}><button className="btn btn-primary form-control text-white">
-                        <i className="fas fa-plus"></i> ADD
-                    </button></Link>
                 </div>
             </div>
             {/* <input type="text" className="form-control my-2" onChange={(e)=>setSearch(e.target.value)} placeholder="Search by Course name"></input> */}

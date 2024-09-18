@@ -208,7 +208,7 @@ router.post('/save', upload.single('photo'), async (request, response) => {
             const {
                 course_id,firstname, lastname, fathername, mothername, cast, category,
                 dob, mobile1, mobile2, address, gender, status, total_fee,
-                discount, LeadSource, is_active, created_by, updated_by, role_id
+                discount, LeadSource, is_active, created_by, updated_by, role_id,transport_id
             } = request.body;
 
             // Store the link to the photo instead of just the filename
@@ -219,7 +219,7 @@ router.post('/save', upload.single('photo'), async (request, response) => {
             }
 
             let data = await student.create({
-                course_id, firstname, lastname, fathername, mothername, cast, category,
+                course_id,transport_id, firstname, lastname, fathername, mothername, cast, category,
                 photo, dob, mobile1, mobile2, address, gender, status,
                 total_fee, discount, LeadSource, is_active,
                 created_by: created_by || null,
@@ -543,10 +543,15 @@ router.put('/update/:id', upload.single('photo'), async (request, response) => {
         if(dataa[0].role_name == 'Admin' || dataa[0].role_name == 'teacher'){
             const pid = request.params.id;
             const updateData = { ...request.body };
-
+            console.log(updateData)
             // If a new photo is uploaded, add its path to updateData
             if (request.file) {
                 updateData.photo = `/images/${request.file.filename}`;
+            }
+
+            if (updateData.transport_id) {
+                updateData.transport_id = parseInt(updateData.transport_id, 10) || null;
+                console.log(updateData.transport_id)
             }
 
             let updatedRowsCount = await student.update(updateData, {

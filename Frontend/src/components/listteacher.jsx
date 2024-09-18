@@ -93,7 +93,7 @@ export default function Updatetransportation() {
                             <td>{obj.mobile}</td>
                             <td>{obj.salary}</td>
                             <td>{obj.is_active ? "active" : "deactivated"}</td>
-                            <td><i className="fas fa-edit" onClick={() => isUpdate(obj)} data-bs-toggle="modal" data-bs-target="#exampleModal"></i></td>
+                            <td><i className="fas fa-edit" style={{cursor:"pointer"}} onClick={() => isUpdate(obj)} data-bs-toggle="modal" data-bs-target="#exampleModal"></i></td>
                         </tr>)
                     }
                 </tbody>

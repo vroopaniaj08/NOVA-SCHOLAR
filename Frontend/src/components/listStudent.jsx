@@ -32,6 +32,11 @@ export default function UpdateCourse() {
     const [transport, settransport] = useState([])
     const [courseFee, setcourseFee] = useState(0);
     const [transportFee, settransportFee] = useState(0);
+    const [totalFee, setTotalFee] = useState(0);
+
+    // ... existing code ...
+
+
     useEffect(() => {
         courseList()
         // transportList()
@@ -72,18 +77,19 @@ export default function UpdateCourse() {
         addressBox.current.value = data.address
         genderBox.current.value = data.gender
         statusBox.current.value = data.status
-        totalBox.current.value = (courseFee + transportFee)
+        totalBox.current.value = data.total_fee
         discountBox.current.value = data.discount
         leadSourceBox.current.value = data.LeadSource
+        transportIdBox.current.value = data.transport_id
         // isactiveBox.current.value = data.is_active
         { setID(data.id) }
     }
 
     let doneupdate = async (event) => {
         event.preventDefault();
-        // console.log(isactiveBox.current.value)
         let obj = new FormData();
-        totalBox.current.value = parseFloat(courseFee) + parseFloat(transportFee);
+        // totalBox.current.value = parseFloat(courseFee) + parseFloat(transportFee);
+        console.log(transportIdBox.current.value)
         obj.append("course_id", courseIdBox.current.value);
         obj.append("firstname", firstNameBox.current.value);
         obj.append("lastname", lastNameBox.current.value);
@@ -101,13 +107,14 @@ export default function UpdateCourse() {
         obj.append("total_fee", totalBox.current.value);
         obj.append("discount", discountBox.current.value);
         obj.append("LeadSource", leadSourceBox.current.value);
+        obj.append("transport_id", transportIdBox.current.value);
         // obj.append("is_active",isactiveBox.current.value);
         obj.append("updated_by", loginStatus.id)
-
+        console.log(obj.get("transport_id"))
         try {
 
             let response = await webmethod.putapiWthTokenForm(apis.updateStudent + "/" + ID, obj, loginStatus.token)
-            console.log(response)
+            // console.log(response.student.dataValues)
             if (response.data.status) {
                 // setlist(obj)
                 listitems()
@@ -116,23 +123,24 @@ export default function UpdateCourse() {
         }
         catch (error) {
             console.log(error);
+            alert("Update failed: " + error.message);
         }
     }
     let handleCourseChange = async (event) => {
         const selectedCourseId = event.target.value;
         courseIdBox.current.value = selectedCourseId;
-        console.log("Selected Course ID:", selectedCourseId);
+        // console.log("Selected Course ID:", selectedCourseId);
         const response = await webmethod.getapi(apis.oneCourse + '/' + event.target.value, loginStatus.token)
-        console.log(response.data.data.fee);
+        // console.log(response.data.data.fee);
         { setcourseFee(response.data.data.fee) }
     };
 
     let handleTransportChange = async (event) => {
         const selectedCourseId = event.target.value;
         transportIdBox.current.value = selectedCourseId;
-        console.log("Selected Course ID:", selectedCourseId);
+        // console.log("Selected Course ID:", selectedCourseId);
         const response = await webmethod.getapi(apis.oneTransport + '/' + event.target.value, loginStatus.token)
-        console.log(response.data.data.fee);
+        // console.log(response.data.data.fee);
         { settransportFee(response.data.data.fee) }
     };
 
@@ -143,6 +151,10 @@ export default function UpdateCourse() {
         console.log(response);
         { setlist(response.data.data) }
     }
+    useEffect(() => {
+        // Update total fee whenever courseFee or transportFee changes
+        setTotalFee(parseFloat(courseFee) + parseFloat(transportFee));
+    }, [courseFee, transportFee]);
 
     return <>
         <div className="container">
@@ -180,7 +192,7 @@ export default function UpdateCourse() {
                             <td>{obj.mobile1}</td>
                             <td>{obj.status}</td>
                             <td>{/* <button className="btn btn-primary" onClick={() => isUpdate(obj)} data-bs-toggle="modal" data-bs-target="#exampleModal"> */}
-                                <i className="fas fa-edit" onClick={() => isUpdate(obj)} data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
+                                <i className="fas fa-edit" style={{cursor:"pointer"}} onClick={() => isUpdate(obj)} data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
                                 {/* </button> */}</td>
                         </tr>)
                     }
@@ -323,7 +335,6 @@ export default function UpdateCourse() {
                             </div>
                         </form>
                     </div>
-
                 </div>
             </div>
         </div>

@@ -61,10 +61,10 @@ export default function UpdateCourse(){
     <div className="container">
     <h3 className="text-center">Course List</h3>
     <div className="row my-3">
-        <div className="col-md-6">
+        <div className="col-md-10">
             <input type="text" className="form-control" onChange={(e)=>setSearch(e.target.value)} placeholder="Search by Course name"></input>
         </div>
-        <div className="col-md-6">
+        <div className="col-md-2">
         <Link to = '/saveCourse' style={{textDecoration:'none'}}><button className="btn btn-primary form-control text-white">+ADD</button></Link>
         </div>
     </div>
@@ -86,7 +86,7 @@ export default function UpdateCourse(){
                     <td>{obj.fee}</td>
                     <td>{obj.is_active? "active": "deactivated"}</td>
                     {/* <td>{obj.created_by}</td> */}
-                    <td><button className="btn btn-primary" onClick = {()=>isUpdate(obj)} data-bs-toggle="modal" data-bs-target="#exampleModal">Update</button></td>
+                    <td><i className="fas fa-edit" style={{cursor:"pointer"}} onClick = {()=>isUpdate(obj)} data-bs-toggle="modal" data-bs-target="#exampleModal"></i></td>
                 </tr>)
             }
         </tbody>
